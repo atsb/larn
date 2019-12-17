@@ -8,14 +8,11 @@
    actual_readopts()
 */
 #include <sys/types.h>
-
-#if defined SYSV || BSD
 #include <fcntl.h>
 #include <termio.h>
 #include <sys/ioctl.h>
-#endif
-
 #include <ctype.h>
+#include <string.h>
 #include "header.h"
 #include "larndefs.h"
 #include "monsters.h"
@@ -99,16 +96,12 @@ yylex()
                 }
 #endif
             }
-
-#if defined SYSV || BSD
         do /* if keyboard input buffer is too big, flush some of it */
             {
             ioctl(0,FIONREAD,&ic);
             if (ic>flushno)   read(0,&cc,1);
             }
         while (ic>flushno);
-#endif
-
         if (read(0,&cc,1) != 1)
             return(lastok = -1);
         if (cc == '!')      /* ! shell escape */
@@ -119,27 +112,19 @@ yylex()
             sncbr();
             if ((ic=fork())==0) /* child */
                 {
-#ifdef SYSV
                 char *s, *getenv();
                 if ((s=getenv("SHELL")) == (char *) 0)
                     s = "/bin/sh";
                 execl(s,"larn-shell", (char *)0);
                 exit(0);
-#else
-                execl("/bin/csh",0);
-                exit(0);
-                wait(0);
-#endif
                 }
             if (ic<0) /* error */
                 {
                 write(2,"Can't fork off a shell!\n",25);
                 sleep(2);
                 }
-#ifdef SYSV
             else
                 wait( (int *)0 );
-#endif
             setscroll();
             return(lastok = 'L'-64);    /* redisplay screen */
             }
@@ -183,21 +168,7 @@ yylex()
  */
 lflushall()
     {
-#ifdef SYSV
     ioctl(0,TCFLSH,0);
-#else
-    char cc;
-    int ic;
-    for (;;) {      /* if keyboard input buffer is too big, flush some of it */
-        ioctl(0,FIONREAD,&ic);
-        if (ic<=0)
-            return(0);
-        while (ic>0) {
-            read(0,&cc,1);
-            --ic;
-        } /* gobble up the byte */
-    }
-#endif
 }
 
 /*
