@@ -22,6 +22,7 @@
     act_open_door           open a door
 */
 
+#include "action.h"
 #include "header.h"
 #include "larndefs.h"
 #include "monsters.h"

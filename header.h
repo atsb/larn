@@ -12,16 +12,16 @@
 #define TRUE 1
 #define FALSE 0
 
-#define SCORENAME   "larn.scr"
-#define LOGFNAME    "larn.log"
-#define HELPNAME    "larn.hlp"
-#define LEVELSNAME  "larn.maz"
-#define FORTSNAME   "larn.ftn"
-#define PLAYERIDS   "larn.pid"
-#define HOLIFILE    "larn.hol"
-#define LARNOPTS    "larn.opt"
-#define SAVEFILE    "larn.sav"
-#define CKPFILE     "larn.ckp"
+#define SCORENAME   "data/larn.scr"
+#define LOGFNAME    "data/larn.log"
+#define HELPNAME    "data/larn.hlp"
+#define LEVELSNAME  "data/larn.maz"
+#define FORTSNAME   "data/larn.ftn"
+#define PLAYERIDS   "data/larn.pid"
+#define HOLIFILE    "data/larn.hol"
+#define LARNOPTS    "data/larn.opt"
+#define SAVEFILE    "data/larn.sav"
+#define CKPFILE     "data/larn.ckp"
 #define MAIL     /* disable the mail routines for MSDOS */
 
 #define MAXLEVEL 11    /*  max # levels in the dungeon         */
@@ -60,40 +60,3 @@ struct sphere
 #define LOGNAMESIZE 40          /* max size of the players name */
 #define PSNAMESIZE 40           /* max size of the process name */
 #define SAVEFILENAMESIZE 128    /* max size of the savefile path */
-
-/* PROTOTYPES FOR SOURCE FILES */
-
-/* ACTION.C */
-int act_remove_gems(int);
-int act_sit_throne(int);
-int act_up_stairs(void);
-int act_down_stairs(void);
-int act_drink_fountain(void);
-int act_wash_fountain(void);
-int act_down_shaft(void);
-int act_up_shaft(void);
-int volshaft_climbed(int);
-int act_desecrate_altar(void);
-int act_donation_pray(void);
-int act_just_pray(void);
-void act_prayer_heard(void);
-int act_ignore_altar(void);
-int act_open_chest(int,int);
-int act_open_door(int,int);
-
-/* IO.C */
-void lprcat(char*);
-void newgame(void);
-void lprintf(char *fmt, ...);
-long larnlrint(void);
-void cursor(int,int);
-void cursors(void);
-int sncbr(void);
-
-/* SAVELEV.C /*
-void savelevel(void);
-void getlevel(void);
-
-/* GLOBAL.C */
-int rnd (int);
-int rund (int);

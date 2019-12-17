@@ -53,18 +53,76 @@
  * Note: ** entries are available only in termcap mode.
  */
  
-/* ty vole! to je strašný kód.. budu opravte.. ~Gibbon */
-/* ^^ vsechno dobry :) ~Gibbon */
+ /***********************************************************-***** 
 
+
+                         /-------------\ 
+                        /               \ 
+                       /                 \ 
+                      /                   \ 
+                      |   XXXX     XXXX   | 
+                      |   XXXX     XXXX   | 
+                      |   XXX       XXX   | 
+                      \         X         / 
+                       --\     XXX     /-- 
+                        | |    XXX    | | 
+                        | |           | | 
+                        | I I I I I I I | 
+                        |  I I I I I I  | 
+                         \             / 
+                          --         -- 
+                            \-------/ 
+                    XXX                    XXX 
+                   XXXXX                  XXXXX 
+                   XXXXXXXXX         XXXXXXXXXX 
+                          XXXXX   XXXXX 
+                             XXXXXXX 
+                          XXXXX   XXXXX 
+                   XXXXXXXXX         XXXXXXXXXX 
+                   XXXXX                  XXXXX 
+                    XXX                    XXX 
+
+
+                    ***************************
+                    * BEWARE FELLOW CODERS!!! * 
+                    *************************** 
+
+
+                        All ye who enter here: 
+                    Most of the code in this file 
+                    is something not of this world.
+
+
+                           Tread carefully. 
+
+
+                    If you think you understand it,
+                    then improve it, then watch it
+                         break your terminal.     
+
+
+ ****************************************************************/ 
+ 
+/* Cleaned up this massively obfuscated file that 
+ * was intended to port larn to every broken system
+ * in existence.
+ *
+ * Cleaned up for GNU/Linux only.  Also fixed
+ * terminal handling natively.
+ *
+ * ~Gibbon
+*/
+
+#include <ctype.h>
+#include <sgtty.h>
+#include <stdarg.h>
+#include <string.h>
+#include <termios.h>
+#include <term.h>
+#include "io.h"
 #include "header.h"
 #include "larndefs.h"
 #include "player.h"
-#include <ctype.h>
-#include <sgtty.h>
-
-#ifdef SYSV /* system III or system V */
-#include <termio.h>
-#endif
 
 #define sgttyb termio
 #define stty(_a,_b) ioctl(_a,TCSETA,_b)
@@ -72,19 +130,9 @@
 
 static int rawflg = 0;
 static char saveeof,saveeol;
-#define doraw(_a) if(!rawflg){++rawflg;saveeof=_a.c_cc[VMIN];saveeol=_a.c_cc[VTIME];}\
-    _a.c_cc[VMIN]=1;_a.c_cc[VTIME]=1;_a.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL)
-#define unraw(_a) _a.c_cc[VMIN]=saveeof;_a.c_cc[VTIME]=saveeol;_a.c_lflag |= ICANON|ECHO|ECHOE|ECHOK|ECHONL
 
-#ifndef NOVARARGS   /* if we have varargs */
-#include <stdarg.h>
-#else
-typedef char   *va_list;
-#define va_dcl int va_alist;
-#define va_start(plist) plist = (char *) &va_alist
-#define va_end(plist)
-#define va_arg(plist,mode) ((mode *)(plist += sizeof(mode)))[-1]
-#endif
+#define doraw(_a) if(!rawflg){++rawflg;saveeof=_a.c_cc[VMIN];saveeol=_a.c_cc[VTIME];}_a.c_cc[VMIN]=1;_a.c_cc[VTIME]=1;_a.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL)
+#define unraw(_a) _a.c_cc[VMIN]=saveeof;_a.c_cc[VTIME]=saveeol;_a.c_lflag |= ICANON|ECHO|ECHOE|ECHOK|ECHONL
 
 #define LINBUFSIZE 128      /* size of the lgetw() and lgetl() buffer       */
 int lfd;            /*  output file numbers     */
@@ -723,15 +771,15 @@ lflush ()
     flush_buf();    /* flush real output buffer now */
     }
 
-static int index=0;
+static int ttindex=0;
 /*
  * ttputch(ch)      Print one character in decoded output buffer.
  */
 static int ttputch(c)
 int c;
     {
-    outbuf[index++] = c;
-    if (index >= BUFBIG)  flush_buf();
+    outbuf[ttindex++] = c;
+    if (ttindex >= BUFBIG)  flush_buf();
 	return(0);
     }
 
@@ -740,8 +788,8 @@ int c;
  */
 flush_buf()
     {
-    if (index) write(lfd, outbuf, index);
-    index = 0;
+    if (ttindex) write(lfd, outbuf, ttindex);
+    ttindex = 0;
     }
 
 /*

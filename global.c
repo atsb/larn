@@ -32,6 +32,7 @@
  */
 
 #include <ctype.h>
+#include "global.h"
 #include "header.h"
 #include "larndefs.h"
 #include "monsters.h"

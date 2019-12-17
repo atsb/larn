@@ -85,44 +85,17 @@ main(argc,argv)
     register int i,j;
     int hard = -1;
     char *ptr=0;
+    char *homedir = getenv("HOME");
 #ifdef VT100
     char *ttype;
 #endif
-#ifndef MSDOS
     struct passwd *pwe,*getpwuid();
-#endif
 
 /*
  *  first task is to identify the player
  */
-#ifndef VT100
     init_term();    /* setup the terminal (find out what type) for termcap */
-#endif
-#ifdef AMIGA
-    AmInit(); /* Open console device */
-    ptr = "AMIGAN";
-#else
-#ifdef MSDOS
-    ptr = "PLAYER";
-#else
-#ifdef VMS
-    ptr = getenv("USER");
-#else
-    if (((ptr = getlogin()) == 0) || (*ptr==0)) /* try to get login name */
-      if (pwe=getpwuid(getuid())) /* can we get it from /etc/passwd? */
-        ptr = pwe->pw_name;
-      else
-      if ((ptr = getenv("USER")) == 0)
-        if ((ptr = getenv("LOGNAME")) == 0)
-          {
-          noone: write(2, "Can't find your logname.  Who Are You?\n",39);
-                 exit(1);
-          }
-    if (ptr==0) goto noone;
-    if (strlen(ptr)==0) goto noone;
-#endif /* VMS */
-#endif /* MSDOS */
-#endif /* AMIGA */
+    ptr = "NUFF";
 
 /*
  *  second task is to prepare the pathnames the player will need
@@ -137,76 +110,8 @@ main(argc,argv)
     if ((lpbuf==0) || (inbuffer==0)) 
         died(-285); /* malloc() failure */
 
-# ifdef MSDOS
-    /* LARNHOME now comes from the options file, so it must be read in
-     * before constructing the other file names.  Unfortunately we have
-     * to look for the -o option now.
-     */
-    strcpy(optsfile, LARNOPTS);
-    for (i = 1; i < argc; i++)
-        if (strncmp(argv[i], "-o", 2) == 0) 
-            {
-            argv[i][0] = 0;         /* remove this argv */
-            if (argv[i][2] != '\0')
-                strncpy(optsfile, &argv[i][2], PATHLEN);
-            else
-                {
-                strncpy(optsfile, argv[i + 1], PATHLEN);
-                argv[i + 1][0] = 0; /* and this argv */
-                }
-            optsfile[PATHLEN - 1] = 0;
-            break;
-            }
-    readopts();
-    append_slash(larndir);
-
-    /* Savefile and swapfile can be given explicitly as options
-     */
-    if (!savefilename[0]) 
-        {
-        strcpy(savefilename, larndir);
-        strcat(savefilename, SAVEFILE);
-        }
-    if (!swapfile[0]) 
-        {
-        strcpy(swapfile, larndir);
-        strcat(swapfile, SWAPFILE);
-        }
-    strcpy(scorefile, larndir);
-    strcpy(logfile, larndir);
-    strcpy(helpfile, larndir);
-    strcpy(larnlevels, larndir);
-    strcpy(fortfile, larndir);
-    strcpy(playerids, larndir);
-    strcpy(ckpfile, larndir);
-
-# else /* MSDOS */
-
-    if ((ptr = getenv("HOME")) == 0) 
-        ptr = ".";
-#ifdef SAVEINHOME
-    /* save file name in home directory */
-# ifdef VMS
-    sprintf(savefilename, "%s%s",ptr, SAVEFILE);
-# else
-    sprintf(savefilename, "%s/%s",ptr, SAVEFILE);
-# endif VMS
-#else
-    strcat(savefilename,logname);   /* prepare savefile name */
-    strcat(savefilename,".sav");    /* prepare savefile name */
-#endif
-#ifdef VMS
-    sprintf(optsfile, "%s%s",ptr, LARNOPTS);   /* the options filename */
-#else
-#ifdef AMIGA
-    sprintf(optsfile, "%s%s", LARNHOME, LARNOPTS);   /* the options filename */
-#else
-    sprintf(optsfile, "%s%s",LARNHOME, LARNOPTS);   /* the options filename */
-#endif AMIGA
-#endif VMS
-
-# endif /* MSDOS */
-
+    strcat(savefilename, SAVEFILE);
+    strcat(optsfile, LARNOPTS);   /* the options filename */
     strcat(scorefile, SCORENAME);   /* the larn scoreboard filename */
     strcat(logfile, LOGFNAME);      /* larn activity logging filename */
     strcat(helpfile, HELPNAME);     /* the larn on-line help file */

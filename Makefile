@@ -10,9 +10,6 @@
 # in SYSV UNIX. It is also used to set the sigset() function call
 # instead of sigsetup().
 #
-# If you are using an ancient UNIX system (doubtful) you may need
-# to define -DNOVARARGS to the CFLAGS.
-#
 # If you wish to have the save file in your home directory
 # add -DSAVEINHOME to the CFLAGS (default setup).
 
@@ -24,7 +21,7 @@ OBJ = action.o bill.o config.o create.o data.o diag.o display.o \
 	scores.o signal.o spells.o spheres.o store.o \
 	tok.o
 
-CFLAGS = -g -Wall -Wextra -DSYSV -DEXTRA -DSAVEINHOME #-DSYSVSIGNALS
+CFLAGS = -g -Wall -Wextra -DSYSV -DEXTRA #-DSYSVSIGNALS
 
 larn: $(OBJ)
 	cc -o $(BIN) $(OBJ) -lncurses

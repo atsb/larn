@@ -1,5 +1,6 @@
 /* savelev.c */
 /* Removed MSDOS stuff ~Gibbon */
+#include "savelev.h"
 #include "header.h"
 #include "larndefs.h"
 

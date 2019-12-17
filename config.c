@@ -9,7 +9,7 @@
 #include "larndefs.h"
 
 #ifndef LARNHOME
-#define LARNHOME "./"     /* normally supplied by a Makefile */
+#define LARNHOME "./data"     /* normally supplied by a Makefile */
 #endif
 
 #ifndef WIZID
