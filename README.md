@@ -18,8 +18,7 @@ Documentation for building the sourcecode is located in the Makefile as comments
 
 # Historical
 
-This version of Larn was based on 12.3.1 from 1991.  I have added fixes and improvements specifically
-for UNIX systems (SunOS/Solaris, macOS) and for UNIX-like systems (GNU/Linux).
+This version of Larn was based on 12.3.1 from 1991.  I have added fixes and improvements specifically for UNIX-like systems (GNU/Linux) only.
 
 This version is still under Noah Morgan's custom license.  See LICENSE.md for more information.
 
